@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - TimeApp</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Analytics Dashboard</h1>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Requests</h3>
+                <div id="total-requests" class="stat-value">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Avg Response Time</h3>
+                <div id="avg-response" class="stat-value">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Uptime</h3>
+                <div id="uptime" class="stat-value">-</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h2>Requests per Hour (Last 24h)</h2>
+            <canvas id="hourlyChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <h2>Geographic Distribution</h2>
+            <canvas id="geoChart"></canvas>
+        </div>
+
+        <div class="response-times">
+            <h2>Response Time Statistics (ms)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody id="response-stats">
+                    <tr><td colspan="2">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </div>
+
+    <script src="/static/js/analytics.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+[Unit]
+Description=TimeApp Flask Application
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=notify
+User=timeapp
+Group=timeapp
+WorkingDirectory=/opt/timeapp
+Environment="PATH=/opt/timeapp/venv/bin"
+Environment="FLASK_ENV=production"
+Environment="SECRET_KEY=change-this-in-production"
+Environment="DATABASE_URL=postgresql://timeapp:password@localhost/timeapp"
+
+# Main process
+ExecStart=/opt/timeapp/venv/bin/gunicorn \
+    --bind 127.0.0.1:5000 \
+    --workers 4 \
+    --worker-class sync \
+    --timeout 60 \
+    --access-logfile /var/log/timeapp/access.log \
+    --error-logfile /var/log/timeapp/error.log \
+    --log-level info \
+    'timeapp:create_app()'
+
+# Restart policy
+Restart=always
+RestartSec=10
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/log/timeapp
+
+# Resource limits
+LimitNOFILE=4096
+MemoryLimit=512M
+CPUQuota=50%
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+[Unit]
+Description=PostgreSQL Backup for TimeApp
+Requires=backup_pg.service
+
+[Timer]
+# Run daily at 2:00 AM
+OnCalendar=daily
+OnCalendar=*-*-* 02:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
