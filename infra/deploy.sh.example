@@ -9,7 +9,7 @@ APP_NAME="timeapp"
 APP_USER="timeapp"
 APP_DIR="/opt/timeapp"
 REPO_URL="https://github.com/tommiLipponen/Poutavm2-aika.git"
-BRANCH="main"
+BRANCH="master"
 VENV_DIR="$APP_DIR/venv"
 
 echo "========================================="
@@ -42,9 +42,17 @@ mkdir -p /var/log/timeapp
 if [ -d "$APP_DIR/.git" ]; then
     echo "Updating repository..."
     cd "$APP_DIR"
-    sudo -u "$APP_USER" git pull origin "$BRANCH"
+    chown -R "$APP_USER:$APP_USER" "$APP_DIR"
+    sudo -u "$APP_USER" git fetch origin
+    sudo -u "$APP_USER" git reset --hard origin/"$BRANCH"
 else
     echo "Cloning repository..."
+    if [ -d "$APP_DIR" ] && [ "$(ls -A $APP_DIR)" ]; then
+        echo "Directory $APP_DIR exists and is not empty. Removing contents..."
+        rm -rf "$APP_DIR"
+    fi
+    mkdir -p "$APP_DIR"
+    chown -R "$APP_USER:$APP_USER" "$APP_DIR"
     sudo -u "$APP_USER" git clone -b "$BRANCH" "$REPO_URL" "$APP_DIR"
     cd "$APP_DIR"
 fi
