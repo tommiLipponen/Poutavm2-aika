@@ -1,54 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics Dashboard - TimeApp</title>
+    <title>Analytics - Chinook Database</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Analytics Dashboard</h1>
+        <h1>📊 Chinook Music Store Analytics</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            Data haettu PostgreSQL lempdb Chinook tietokannasta
+        </p>
         
         <div class="stats-grid">
             <div class="stat-card">
-                <h3>Total Requests</h3>
-                <div id="total-requests" class="stat-value">-</div>
+                <h3>Total Revenue</h3>
+                <div id="total-revenue" class="stat-value">-</div>
             </div>
             <div class="stat-card">
-                <h3>Avg Response Time</h3>
-                <div id="avg-response" class="stat-value">-</div>
+                <h3>Total Invoices</h3>
+                <div id="total-invoices" class="stat-value">-</div>
             </div>
             <div class="stat-card">
-                <h3>Uptime</h3>
-                <div id="uptime" class="stat-value">-</div>
+                <h3>Customers</h3>
+                <div id="total-customers" class="stat-value">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Tracks</h3>
+                <div id="total-tracks" class="stat-value">-</div>
             </div>
         </div>
 
         <div class="chart-container">
-            <h2>Requests per Hour (Last 24h)</h2>
-            <canvas id="hourlyChart"></canvas>
+            <h2>Sales by Country (Top 10)</h2>
+            <canvas id="countryChart"></canvas>
         </div>
 
         <div class="chart-container">
-            <h2>Geographic Distribution</h2>
-            <canvas id="geoChart"></canvas>
+            <h2>Monthly Sales Trend</h2>
+            <canvas id="monthlyChart"></canvas>
         </div>
 
-        <div class="response-times">
-            <h2>Response Time Statistics (ms)</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Metric</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody id="response-stats">
-                    <tr><td colspan="2">Loading...</td></tr>
-                </tbody>
-            </table>
+        <div class="chart-container">
+            <h2>Top Music Genres</h2>
+            <canvas id="genreChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <h2>Top Artists by Album Count</h2>
+            <canvas id="artistChart"></canvas>
         </div>
 
         <a href="/" class="back-link" style="display: inline-block; margin-top: 30px; padding: 15px 35px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 10px; font-size: 1.2em; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">🕐 Time sivulle</a>
