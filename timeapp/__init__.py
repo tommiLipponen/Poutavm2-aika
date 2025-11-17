@@ -16,7 +16,7 @@ def create_app(config=None):
     # Default configuration
     app.config.update(
         SECRET_KEY=os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production'),
-        DATABASE_URL=os.environ.get('DATABASE_URL', 'postgresql://localhost/timeapp'),
+        DATABASE_URL=os.environ.get('DATABASE_URL', 'postgresql://lempuser:StrongPassword@localhost/lempdb'),
     )
     
     # Override with custom config if provided

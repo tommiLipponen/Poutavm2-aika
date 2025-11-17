@@ -4,7 +4,6 @@ Time endpoint module for displaying and serving time data
 
 from flask import Blueprint, jsonify, render_template_string, current_app
 from datetime import datetime
-import pytz
 import psycopg2
 import os
 
@@ -31,8 +30,7 @@ def get_time_from_db():
     except Exception as e:
         current_app.logger.error(f"Database error: {e}")
         # Fallback to system time if database fails
-        helsinki_tz = pytz.timezone('Europe/Helsinki')
-        return datetime.now(helsinki_tz)
+        return datetime.now()
 
 
 @time_bp.route('/')

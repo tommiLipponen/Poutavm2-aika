@@ -29,15 +29,19 @@ timeapp/
 │   ├── analytics.py
 │   ├── time_endpoint.py
 │   ├── templates/
+│   │   └── data-analytics.html
 │   └── static/
 │       ├── css/
-│       ├── js/
-│       └── data-analytics.html
-├── tests/
+│       │   └── style.css
+│       └── js/
+│           └── analytics.js
 ├── infra/
-│   ├── nginx.timeapp.conf.example
-│   ├── timeapp.service.example
-│   ├── deploy.sh.example
+│   ├── nginx.timeapp.conf
+│   ├── timeapp.service
+│   ├── deploy.sh
+│   ├── update.sh
+│   ├── backup_pg.service.example
+│   ├── backup_pg.sh.example
 │   └── backup_pg.timer.example
 └── docs/
     ├── DEPLOY.md
@@ -71,14 +75,9 @@ See [DEPLOY.md](docs/DEPLOY.md) for detailed deployment instructions to CSC Pout
 ## Requirements
 
 - Python 3.8+
-- Flask
-- PostgreSQL (for production)
-
-## Testing
-
-```bash
-pytest tests/
-```
+- Flask 3.1.2
+- PostgreSQL 14+ with lempdb (Chinook database)
+- psycopg2-binary for database connectivity
 
 ## Production Deployment
 
@@ -94,11 +93,11 @@ sudo ./infra/deploy.sh
 
 ## API Endpoints
 
-- `GET /` - Main page with time display
-- `GET /time` - Time display page
+- `GET /` - Time display page (updates from PostgreSQL every 5 seconds)
 - `GET /time/api` - Time API (JSON)
 - `GET /data-analysis/` - Analytics dashboard
 - `GET /data-analysis/api/stats` - Analytics API (JSON)
+- `GET /data-analysis/api/health` - Health check endpoint
 
 ## License
 

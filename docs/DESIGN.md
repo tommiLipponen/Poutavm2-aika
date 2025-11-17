@@ -86,7 +86,7 @@ timeapp/
 - UTC conversion
 
 **Design Decisions**:
-- Used `pytz` for robust timezone handling
+- PostgreSQL handles timezone conversion with `AT TIME ZONE 'Europe/Helsinki'`
 - Separated HTML view and API for flexibility
 - Client-side updates to reduce server load
 
