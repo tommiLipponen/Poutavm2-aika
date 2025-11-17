@@ -102,16 +102,20 @@ def show_time():
             }
             .nav-link {
                 display: inline-block;
-                margin-top: 20px;
-                padding: 12px 24px;
+                margin-top: 30px;
+                padding: 15px 35px;
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 color: white;
                 text-decoration: none;
-                border-radius: 8px;
-                transition: transform 0.3s;
+                border-radius: 10px;
+                font-size: 1.2em;
+                font-weight: bold;
+                transition: all 0.3s;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
             }
             .nav-link:hover {
                 transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
             }
             @keyframes fadeIn {
                 from { opacity: 0.5; }
@@ -169,7 +173,7 @@ def show_time():
                     <strong>Tietolähde:</strong> PostgreSQL (lempdb)<br>
                     <strong>Aikavyöhyke:</strong> Europe/Helsinki (EET/EEST)
                 </div>
-                <a href="/data-analysis/" class="nav-link">📊 Data-Analytiikka</a>
+                <a href="/data-analysis/" class="nav-link">📊 Data-Analysis sivulle</a>
             </div>
         </div>
     </body>
