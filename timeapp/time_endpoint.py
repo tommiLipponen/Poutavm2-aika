@@ -185,7 +185,7 @@ def show_time():
     )
 
 
-@time_bp.route('/api')
+@time_bp.route('/time/api')
 def time_api():
     """API endpoint for current time from PostgreSQL"""
     db_time = get_time_from_db()
