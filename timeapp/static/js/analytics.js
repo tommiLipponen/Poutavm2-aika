@@ -1,5 +1,8 @@
 // Chinook Database Analytics Dashboard
 
+// Store chart instances globally
+let countryChart, monthlyChart, genreChart, artistChart;
+
 // Fetch and display analytics data
 async function fetchAnalytics() {
     try {
@@ -17,21 +20,47 @@ async function fetchAnalytics() {
         document.getElementById('total-customers').textContent = data.summary.total_customers.toLocaleString();
         document.getElementById('total-tracks').textContent = data.summary.total_tracks.toLocaleString();
         
-        // Create charts
-        createCountryChart(data.sales_by_country);
-        createMonthlyChart(data.monthly_sales);
-        createGenreChart(data.genre_data);
-        createArtistChart(data.top_artists);
+        // Create or update charts
+        if (!countryChart) {
+            createCountryChart(data.sales_by_country);
+            createMonthlyChart(data.monthly_sales);
+            createGenreChart(data.genre_data);
+            createArtistChart(data.top_artists);
+        } else {
+            updateCharts(data);
+        }
         
     } catch (error) {
         console.error('Error fetching analytics:', error);
     }
 }
 
+function updateCharts(data) {
+    // Update country chart
+    countryChart.data.labels = data.sales_by_country.map(item => item.country);
+    countryChart.data.datasets[0].data = data.sales_by_country.map(item => item.sales);
+    countryChart.update();
+    
+    // Update monthly chart
+    monthlyChart.data.labels = data.monthly_sales.map(item => item.month);
+    monthlyChart.data.datasets[0].data = data.monthly_sales.map(item => item.sales);
+    monthlyChart.update();
+    
+    // Update genre chart
+    genreChart.data.labels = data.genre_data.map(item => item.genre);
+    genreChart.data.datasets[0].data = data.genre_data.map(item => item.tracks);
+    genreChart.update();
+    
+    // Update artist chart
+    artistChart.data.labels = data.top_artists.map(item => item.artist);
+    artistChart.data.datasets[0].data = data.top_artists.map(item => item.albums);
+    artistChart.update();
+}
+
 function createCountryChart(data) {
     const ctx = document.getElementById('countryChart').getContext('2d');
     
-    new Chart(ctx, {
+    countryChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: data.map(item => item.country),
@@ -75,7 +104,7 @@ function createCountryChart(data) {
 function createMonthlyChart(data) {
     const ctx = document.getElementById('monthlyChart').getContext('2d');
     
-    new Chart(ctx, {
+    monthlyChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: data.map(item => item.month),
@@ -117,7 +146,7 @@ function createMonthlyChart(data) {
 function createGenreChart(data) {
     const ctx = document.getElementById('genreChart').getContext('2d');
     
-    new Chart(ctx, {
+    genreChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: data.map(item => item.genre),
@@ -159,7 +188,7 @@ function createGenreChart(data) {
 function createArtistChart(data) {
     const ctx = document.getElementById('artistChart').getContext('2d');
     
-    new Chart(ctx, {
+    artistChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: data.map(item => item.artist),
