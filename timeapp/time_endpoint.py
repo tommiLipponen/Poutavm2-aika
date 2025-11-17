@@ -7,7 +7,7 @@ from datetime import datetime
 import pytz
 
 
-time_bp = Blueprint('time', __name__, url_prefix='/time')
+time_bp = Blueprint('time', __name__)
 
 
 @time_bp.route('/')
@@ -25,7 +25,7 @@ def show_time():
         <link rel="stylesheet" href="/static/css/style.css">
         <script>
             function updateTime() {
-                fetch('/api/time')
+                fetch('/time/api')
                     .then(response => response.json())
                     .then(data => {
                         document.getElementById('time').textContent = data.time;
