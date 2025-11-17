@@ -40,6 +40,11 @@ fi
 echo "Stopping application..."
 systemctl stop timeapp
 
+echo "Clearing Python bytecode cache..."
+find "$APP_DIR" -type d -name '__pycache__' -exec rm -rf {} + 2>/dev/null || true
+find "$APP_DIR" -type f -name '*.pyc' -delete 2>/dev/null || true
+find "$APP_DIR" -type f -name '*.pyo' -delete 2>/dev/null || true
+
 echo "Updating application files..."
 rsync -av --exclude='.git' --exclude='__pycache__' --exclude='*.pyc' --exclude='.venv' --exclude='.env' \
     "$REPO_DIR/" "$APP_DIR/"
