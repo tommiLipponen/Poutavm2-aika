@@ -45,6 +45,13 @@ find "$APP_DIR" -type d -name '__pycache__' -exec rm -rf {} + 2>/dev/null || tru
 find "$APP_DIR" -type f -name '*.pyc' -delete 2>/dev/null || true
 find "$APP_DIR" -type f -name '*.pyo' -delete 2>/dev/null || true
 
+echo "Copying files from repository to deployment directory..."
+rsync -av --exclude='.git' --exclude='__pycache__' --exclude='*.pyc' --exclude='.venv' --exclude='.env' \
+    "$REPO_DIR/" "$APP_DIR/"
+
+# Set ownership
+chown -R "$APP_USER:$APP_USER" "$APP_DIR"
+
 echo "Updating Python dependencies..."
 sudo -u "$APP_USER" "$VENV_DIR/bin/pip" install --upgrade pip
 sudo -u "$APP_USER" "$VENV_DIR/bin/pip" install -r "$APP_DIR/requirements.txt"
