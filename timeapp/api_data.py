@@ -25,6 +25,13 @@ def get_stats():
         conn = get_db_connection()
         cur = conn.cursor()
         
+        # Get the most recent timestamp from weather_data
+        cur.execute("""
+            SELECT MAX(timestamp) FROM weather_data
+        """)
+        result = cur.fetchone()
+        last_weather_update = result[0] if result and result[0] else None
+        
         # Get latest 288 weather records (24 hours at 5min intervals)
         cur.execute("""
             SELECT timestamp, temperature, wind_speed, humidity, pressure
@@ -89,7 +96,9 @@ def get_stats():
             'latest': {
                 'weather': latest_weather,
                 'solar': latest_solar
-            }
+            },
+            'last_update': last_weather_update.isoformat() if last_weather_update else None,
+            'server_time': datetime.now().isoformat()
         })
         
     except Exception as e:

@@ -3,8 +3,23 @@ let weatherChart = null;
 let solarChart = null;
 
 // Countdown timer variables
-let countdownSeconds = 300; // 5 minutes = 300 seconds
+let countdownSeconds = 300; // Default 5 minutes
 let countdownInterval = null;
+let nextUpdateTime = null; // Will be calculated from server data
+
+function calculateNextUpdate(lastUpdateISO, serverTimeISO) {
+    // Parse timestamps
+    const lastUpdate = new Date(lastUpdateISO);
+    const serverTime = new Date(serverTimeISO);
+    
+    // Calculate next update (5 minutes after last update)
+    const nextUpdate = new Date(lastUpdate.getTime() + 300000); // Add 5 minutes
+    
+    // Calculate seconds until next update
+    const secondsUntil = Math.max(0, Math.floor((nextUpdate - serverTime) / 1000));
+    
+    return secondsUntil;
+}
 
 function updateCountdown() {
     const timerElement = document.getElementById('countdown-timer');
@@ -33,6 +48,14 @@ function updateCharts() {
     fetch('/weather-data/api/stats')
         .then(response => response.json())
         .then(data => {
+            // Update countdown based on actual database timestamp
+            if (data.last_update && data.server_time) {
+                countdownSeconds = calculateNextUpdate(data.last_update, data.server_time);
+            } else {
+                // Default to 300 if no data yet
+                countdownSeconds = 300;
+            }
+            
             // Update weather statistics cards
             document.getElementById('current-temp').textContent = 
                 data.latest.weather.temperature !== null ? data.latest.weather.temperature.toFixed(1) : '--';
