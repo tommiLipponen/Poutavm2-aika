@@ -6,6 +6,7 @@ from flask import Blueprint, render_template, jsonify
 import psycopg2
 import os
 from datetime import datetime
+import pytz
 
 api_data_bp = Blueprint('api_data', __name__, url_prefix='/weather-data')
 
@@ -53,9 +54,12 @@ def get_stats():
         cur.close()
         conn.close()
         
+        # Helsinki timezone
+        helsinki_tz = pytz.timezone('Europe/Helsinki')
+        
         # Format weather data (reverse to chronological order)
         weather_data = {
-            'timestamps': [row[0].strftime('%H:%M') for row in reversed(weather_rows)],
+            'timestamps': [row[0].replace(tzinfo=pytz.UTC).astimezone(helsinki_tz).strftime('%H:%M') for row in reversed(weather_rows)],
             'temperature': [float(row[1]) if row[1] is not None else None for row in reversed(weather_rows)],
             'wind_speed': [float(row[2]) if row[2] is not None else None for row in reversed(weather_rows)],
             'humidity': [float(row[3]) if row[3] is not None else None for row in reversed(weather_rows)],
@@ -64,7 +68,7 @@ def get_stats():
         
         # Format solar wind data (reverse to chronological order)
         solar_data = {
-            'timestamps': [row[0].strftime('%H:%M') for row in reversed(solar_rows)],
+            'timestamps': [row[0].replace(tzinfo=pytz.UTC).astimezone(helsinki_tz).strftime('%H:%M') for row in reversed(solar_rows)],
             'speed': [float(row[1]) if row[1] is not None else None for row in reversed(solar_rows)],
             'density': [float(row[2]) if row[2] is not None else None for row in reversed(solar_rows)],
             'bt': [float(row[3]) if row[3] is not None else None for row in reversed(solar_rows)]
