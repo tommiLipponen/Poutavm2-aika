@@ -9,9 +9,6 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     padding: 20px;
     color: #333;
 }
@@ -23,6 +20,7 @@ body {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     max-width: 1200px;
     width: 100%;
+    margin: 0 auto;
 }
 
 h1 {
@@ -72,6 +70,57 @@ h3 {
     padding: 20px;
     background: #f5f7fa;
     border-radius: 15px;
+    height: 400px;
+    position: relative;
+}
+
+.chart-container canvas {
+    max-height: 350px;
+}
+
+.countdown-container {
+    text-align: center;
+    margin: 20px 0;
+    padding: 15px;
+    background: #f5f7fa;
+    border-radius: 10px;
+    color: #667eea;
+    font-weight: bold;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+
+.nav-button {
+    display: inline-block;
+    padding: 12px 25px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.nav-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.nav-button.active {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-top: 5px;
 }
 
 .response-times {
