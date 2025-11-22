@@ -46,11 +46,18 @@ function startCountdown() {
 
 function updateCharts() {
     fetch('/weather-data/api/stats')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             // Update countdown based on actual database timestamp
             if (data.last_update && data.server_time) {
-                countdownSeconds = calculateNextUpdate(data.last_update, data.server_time);
+                const calculated = calculateNextUpdate(data.last_update, data.server_time);
+                // Add 10s buffer to account for potential cron delay
+                countdownSeconds = Math.min(calculated + 10, 310);
             } else {
                 // Default to 300 if no data yet
                 countdownSeconds = 300;
