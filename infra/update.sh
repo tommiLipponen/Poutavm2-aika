@@ -10,9 +10,9 @@ set -e  # Exit on error
 # Configuration
 APP_NAME="timeapp"
 APP_USER="ubuntu"
-APP_DIR="/home/ubuntu/Poutavm2-aika"
+APP_DIR="/opt/timeapp"
 REPO_DIR="$(pwd)"
-VENV_DIR="$APP_DIR/.venv"
+VENV_DIR="$APP_DIR/venv"
 
 echo "========================================="
 echo "TimeApp Update Script"
