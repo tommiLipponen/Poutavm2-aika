@@ -75,6 +75,11 @@ function createCountryChart(data) {
         options: {
             responsive: true,
             maintainAspectRatio: true,
+            layout: {
+                padding: {
+                    bottom: 10
+                }
+            },
             plugins: {
                 legend: {
                     display: false
@@ -120,6 +125,11 @@ function createMonthlyChart(data) {
         options: {
             responsive: true,
             maintainAspectRatio: true,
+            layout: {
+                padding: {
+                    bottom: 10
+                }
+            },
             plugins: {
                 tooltip: {
                     callbacks: {
@@ -167,6 +177,11 @@ function createGenreChart(data) {
         options: {
             responsive: true,
             maintainAspectRatio: true,
+            layout: {
+                padding: {
+                    bottom: 10
+                }
+            },
             plugins: {
                 legend: {
                     position: 'right'
@@ -204,6 +219,11 @@ function createArtistChart(data) {
             indexAxis: 'y', // Horizontal bar chart
             responsive: true,
             maintainAspectRatio: true,
+            layout: {
+                padding: {
+                    bottom: 10
+                }
+            },
             plugins: {
                 legend: {
                     display: false

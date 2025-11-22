@@ -88,6 +88,11 @@ function updateCharts() {
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                bottom: 10
+                            }
+                        },
                         interaction: {
                             mode: 'index',
                             intersect: false,
@@ -169,6 +174,11 @@ function updateCharts() {
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                bottom: 10
+                            }
+                        },
                         interaction: {
                             mode: 'index',
                             intersect: false,
@@ -211,6 +221,8 @@ function updateCharts() {
                 });
             }
 
+            // Reset countdown to 300 after successful fetch (syncs with 5min cron interval)
+            countdownSeconds = 300;
         })
         .catch(error => {
             console.error('Error fetching data:', error);

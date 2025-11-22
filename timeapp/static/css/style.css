@@ -76,13 +76,13 @@ h3 {
     padding: 20px;
     background: #f5f7fa;
     border-radius: 15px;
-    height: 400px;
+    height: 450px;
     position: relative;
     overflow: hidden;
 }
 
 .chart-container canvas {
-    max-height: 350px;
+    max-height: 380px;
 }
 
 .chart-container h2 {
