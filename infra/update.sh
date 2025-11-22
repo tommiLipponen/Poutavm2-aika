@@ -9,8 +9,8 @@ set -e  # Exit on error
 
 # Configuration
 APP_NAME="timeapp"
-APP_USER="timeapp"
-APP_DIR="/opt/timeapp"
+APP_USER="ubuntu"
+APP_DIR="/home/ubuntu/Poutavm2-aika"
 REPO_DIR="$(pwd)"
 VENV_DIR="$APP_DIR/venv"
 
@@ -33,7 +33,7 @@ fi
 
 # Check if application is deployed
 if [ ! -d "$APP_DIR" ]; then
-    echo "Error: Application not deployed. Run deploy.sh first."
+    echo "Error: Application directory not found at $APP_DIR"
     exit 1
 fi
 
@@ -44,13 +44,6 @@ echo "Clearing Python bytecode cache..."
 find "$APP_DIR" -type d -name '__pycache__' -exec rm -rf {} + 2>/dev/null || true
 find "$APP_DIR" -type f -name '*.pyc' -delete 2>/dev/null || true
 find "$APP_DIR" -type f -name '*.pyo' -delete 2>/dev/null || true
-
-echo "Updating application files..."
-rsync -av --exclude='.git' --exclude='__pycache__' --exclude='*.pyc' --exclude='.venv' --exclude='.env' \
-    "$REPO_DIR/" "$APP_DIR/"
-
-# Set ownership
-chown -R "$APP_USER:$APP_USER" "$APP_DIR"
 
 echo "Updating Python dependencies..."
 sudo -u "$APP_USER" "$VENV_DIR/bin/pip" install --upgrade pip
