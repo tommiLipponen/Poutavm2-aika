@@ -211,8 +211,6 @@ function updateCharts() {
                 });
             }
 
-            // Reset countdown to 300 seconds after successful data fetch
-            countdownSeconds = 300;
         })
         .catch(error => {
             console.error('Error fetching data:', error);
@@ -223,6 +221,6 @@ function updateCharts() {
 document.addEventListener('DOMContentLoaded', function() {
     updateCharts();
     startCountdown();
-    // Update charts every 60 seconds
+    // Update charts every 60 seconds (countdown continues independently)
     setInterval(updateCharts, 60000);
 });

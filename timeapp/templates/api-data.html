@@ -16,9 +16,9 @@
         
         <!-- Navigation Buttons -->
         <div class="nav-buttons">
-            <a href="{{ url_for('time.show_time') }}" class="nav-button">Aika</a>
-            <a href="{{ url_for('analytics.analytics_dashboard') }}" class="nav-button">Musiikki Data</a>
-            <a href="{{ url_for('api_data.weather_data') }}" class="nav-button active">Sää ja Aurinkotuuli</a>
+            <a href="{{ url_for('time.show_time') }}" class="nav-button">🕐 Aika</a>
+            <a href="{{ url_for('analytics.analytics_dashboard') }}" class="nav-button">📊 Musiikki Data</a>
+            <a href="{{ url_for('api_data.weather_data') }}" class="nav-button active">🌤️ Sää ja Aurinkotuuli</a>
         </div>
 
         <!-- Weather Statistics Cards -->
@@ -42,7 +42,7 @@
 
         <!-- Weather Chart -->
         <div class="chart-container">
-            <h2>Sää - 24 tunnin historia</h2>
+            <h2>Helsingin sää - 24 h historia</h2>
             <canvas id="weatherChart"></canvas>
         </div>
 

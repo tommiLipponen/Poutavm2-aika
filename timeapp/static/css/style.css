@@ -13,6 +13,12 @@ body {
     color: #333;
 }
 
+body.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .container {
     background: white;
     border-radius: 20px;
@@ -72,10 +78,16 @@ h3 {
     border-radius: 15px;
     height: 400px;
     position: relative;
+    overflow: hidden;
 }
 
 .chart-container canvas {
     max-height: 350px;
+}
+
+.chart-container h2 {
+    margin: 0 0 15px 0;
+    font-size: 1.5rem;
 }
 
 .countdown-container {
