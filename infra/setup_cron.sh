@@ -6,7 +6,7 @@ set -e
 
 TIMEAPP_USER="ubuntu"
 PROJECT_DIR="/home/ubuntu/Poutavm2-aika"
-VENV_PATH="$PROJECT_DIR/venv"
+VENV_PATH="$PROJECT_DIR/.venv"
 SCRIPTS_DIR="$PROJECT_DIR/scripts"
 LOG_DIR="/var/log/timeapp"
 
