@@ -221,8 +221,7 @@ function updateCharts() {
                 });
             }
 
-            // Reset countdown to 300 after successful fetch (syncs with 5min cron interval)
-            countdownSeconds = 300;
+            // Data fetched successfully, countdown will reset in setInterval
         })
         .catch(error => {
             console.error('Error fetching data:', error);
@@ -233,6 +232,9 @@ function updateCharts() {
 document.addEventListener('DOMContentLoaded', function() {
     updateCharts();
     startCountdown();
-    // Update charts every 60 seconds (countdown continues independently)
-    setInterval(updateCharts, 60000);
+    // Update charts every 5 minutes (300 seconds) to match cron interval
+    setInterval(function() {
+        updateCharts();
+        countdownSeconds = 300; // Reset countdown after update
+    }, 300000); // 300000ms = 5 minutes
 });
