@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sää ja Aurinkotuuli - Tommin TimeApp</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Sää ja Aurinkotuuli dataa CSC Pouta palvelimelta</h1>
+        <div class="countdown-container">
+            <span id="countdown">Seuraava päivitys: <strong id="countdown-timer">--</strong> sekunnin kuluttua</span>
+        </div>
+        
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <a href="{{ url_for('time.index') }}" class="nav-button">Aika</a>
+            <a href="{{ url_for('analytics.analytics_dashboard') }}" class="nav-button">Musiikki Data</a>
+            <a href="{{ url_for('api_data.weather_data') }}" class="nav-button active">Sää ja Aurinkotuuli</a>
+        </div>
+
+        <!-- Weather Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Lämpötila</h3>
+                <p class="stat-value" id="current-temp">--</p>
+                <p class="stat-label">°C</p>
+            </div>
+            <div class="stat-card">
+                <h3>Tuulen nopeus</h3>
+                <p class="stat-value" id="current-wind">--</p>
+                <p class="stat-label">m/s</p>
+            </div>
+            <div class="stat-card">
+                <h3>Keskiarvo 24h</h3>
+                <p class="stat-value" id="avg-temp">--</p>
+                <p class="stat-label">°C</p>
+            </div>
+        </div>
+
+        <!-- Weather Chart -->
+        <div class="chart-container">
+            <h2>Sää - 24 tunnin historia</h2>
+            <canvas id="weatherChart"></canvas>
+        </div>
+
+        <!-- Solar Wind Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Aurinkotuulen nopeus</h3>
+                <p class="stat-value" id="current-solar-speed">--</p>
+                <p class="stat-label">km/s</p>
+            </div>
+            <div class="stat-card">
+                <h3>Tiheys</h3>
+                <p class="stat-value" id="current-density">--</p>
+                <p class="stat-label">p/cm³</p>
+            </div>
+            <div class="stat-card">
+                <h3>Keskiarvo 24h</h3>
+                <p class="stat-value" id="avg-solar-speed">--</p>
+                <p class="stat-label">km/s</p>
+            </div>
+        </div>
+
+        <!-- Solar Wind Chart -->
+        <div class="chart-container">
+            <h2>Aurinkotuuli - 24 tunnin historia</h2>
+            <canvas id="solarChart"></canvas>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/api-data.js') }}"></script>
+</body>
+</html>

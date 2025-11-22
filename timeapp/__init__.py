@@ -26,8 +26,10 @@ def create_app(config=None):
     # Register blueprints
     from timeapp.time_endpoint import time_bp
     from timeapp.analytics import analytics_bp
+    from timeapp.api_data import api_data_bp
     
     app.register_blueprint(time_bp)
     app.register_blueprint(analytics_bp)
+    app.register_blueprint(api_data_bp)
     
     return app

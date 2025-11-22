@@ -172,6 +172,7 @@ def show_time():
                     <strong>Aikavyöhyke:</strong> Europe/Helsinki (EET/EEST)
                 </div>
                 <a href="/data-analysis/" class="nav-link">📊 Data-Analysis sivulle</a>
+                <a href="/weather-data/" class="nav-link" style="margin-left: 15px;">🌤️ Sää ja Aurinkotuuli</a>
             </div>
         </div>
     </body>
