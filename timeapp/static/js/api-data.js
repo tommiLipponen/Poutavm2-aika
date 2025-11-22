@@ -27,9 +27,10 @@ function updateCountdown() {
         countdownSeconds--;
         timerElement.textContent = countdownSeconds;
     } else {
-        // Reset to 5 minutes when it reaches 0
-        countdownSeconds = 300;
-        timerElement.textContent = countdownSeconds;
+        // When countdown reaches 0, update charts and reset
+        timerElement.textContent = '0';
+        updateCharts(); // Fetch new data
+        // countdownSeconds will be reset by updateCharts() based on server time
     }
 }
 
@@ -260,11 +261,8 @@ function updateCharts() {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
-    updateCharts();
-    startCountdown();
-    // Update charts every 5 minutes (300 seconds) to match cron interval
-    setInterval(function() {
-        updateCharts();
-        countdownSeconds = 300; // Reset countdown after update
-    }, 300000); // 300000ms = 5 minutes
+    updateCharts(); // Initial chart load
+    startCountdown(); // Start the 1-second countdown ticker
+    // Chart updates are now triggered by countdown reaching 0
+    // No separate setInterval needed - single source of truth
 });
