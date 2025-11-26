@@ -1,0 +1,2 @@
+-- PostgreSQL schema for MQTT chat messages
+-- TODO: Implementation pending

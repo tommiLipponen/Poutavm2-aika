@@ -1,0 +1,17 @@
+# Systemd service for MQTT Logger
+# Copy to /etc/systemd/system/mqtt-logger.service after editing paths
+# TODO: Implementation pending
+[Unit]
+Description=MQTT to PostgreSQL Logger
+After=network.target postgresql.service docker.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/opt/timeapp
+ExecStart=/opt/timeapp/venv/bin/python3 /opt/timeapp/scripts/mqtt_logger.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

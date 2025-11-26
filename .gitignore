@@ -89,3 +89,9 @@ infra/*.service
 infra/*.sh
 infra/*.timer
 !infra/*.example
+
+# MQTT/Docker
+mosquitto/data/*
+mosquitto/log/*
+!mosquitto/data/.gitkeep
+!mosquitto/log/.gitkeep

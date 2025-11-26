@@ -1,0 +1,3 @@
+# Docker Compose for Mosquitto MQTT Broker
+# TODO: Implementation pending
+version: '3.8'

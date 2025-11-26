@@ -27,9 +27,11 @@ def create_app(config=None):
     from timeapp.time_endpoint import time_bp
     from timeapp.analytics import analytics_bp
     from timeapp.api_data import api_data_bp
+    from timeapp.mqtt_chat import mqtt_chat_bp
     
     app.register_blueprint(time_bp)
     app.register_blueprint(analytics_bp)
     app.register_blueprint(api_data_bp)
+    app.register_blueprint(mqtt_chat_bp)
     
     return app
