@@ -1,0 +1,30 @@
+# Nginx Configuration Snippet for MQTT Chat WebSocket Proxy
+# Add this location block to your Nginx server configuration
+# File: /etc/nginx/sites-available/default
+
+    # WebSocket proxy for MQTT broker
+    location /mqtt {
+        proxy_pass http://127.0.0.1:9001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_read_timeout 86400;
+        proxy_send_timeout 86400;
+        proxy_connect_timeout 60s;
+    }
+    
+    # MQTT Chat Flask routes
+    location /mqtt-chat/ {
+        proxy_pass http://unix:/var/www/timeapp/timeapp.sock:;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+# After adding, test and reload:
+# sudo nginx -t
+# sudo systemctl reload nginx
