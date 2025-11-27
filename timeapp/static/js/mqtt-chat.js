@@ -110,10 +110,25 @@ function displayMessage(msg) {
     messageDiv.className = 'message';
     
     const timestamp = msg.timestamp ? new Date(msg.timestamp) : new Date();
-    const timeString = timestamp.toLocaleTimeString('fi-FI', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-    });
+    const today = new Date();
+    const isToday = timestamp.toDateString() === today.toDateString();
+    
+    // Show date if message is from a different day
+    let timeString;
+    if (isToday) {
+        timeString = timestamp.toLocaleTimeString('fi-FI', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+    } else {
+        timeString = timestamp.toLocaleString('fi-FI', { 
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+    }
     
     // Handle both 'message' (from API) and 'text' (from MQTT)
     const messageText = msg.message || msg.text || '';
