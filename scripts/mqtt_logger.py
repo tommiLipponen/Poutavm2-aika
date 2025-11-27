@@ -53,6 +53,24 @@ def init_db_pool():
 
 def save_message(nickname, message, client_id):
     """Save MQTT message to PostgreSQL database with retry logic"""
+    # Input validation
+    if not nickname or not message:
+        logger.warning("Empty nickname or message, skipping")
+        return False
+    
+    # Enforce length limits
+    nickname = str(nickname)[:50]  # Max 50 chars
+    message = str(message)[:500]   # Max 500 chars
+    client_id = str(client_id)[:100] if client_id else 'unknown'
+    
+    # Strip whitespace
+    nickname = nickname.strip()
+    message = message.strip()
+    
+    if not nickname or not message:
+        logger.warning("Empty nickname or message after stripping, skipping")
+        return False
+    
     max_retries = 3
     retry_delay = 2
     

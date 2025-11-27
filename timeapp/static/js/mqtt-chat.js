@@ -84,6 +84,17 @@ function sendMessage() {
     
     if (!message || !mqttClient) return;
     
+    // Validate input lengths (enforce limits)
+    if (nick.length > 50) {
+        alert('Nimimerkki liian pitkä (max 50 merkkiä)');
+        return;
+    }
+    
+    if (message.length > 500) {
+        alert('Viesti liian pitkä (max 500 merkkiä)');
+        return;
+    }
+    
     // Save nickname to localStorage
     localStorage.setItem('mqtt_nickname', nick);
     nickname = nick;
