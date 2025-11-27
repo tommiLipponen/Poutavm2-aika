@@ -22,7 +22,9 @@ def chat_page():
 def get_messages():
     """Get recent chat messages from database"""
     try:
-        limit = 50  # Last 50 messages
+        from flask import request
+        limit = int(request.args.get('limit', 50))  # Default 50 messages
+        offset = int(request.args.get('offset', 0))  # Default offset 0
         
         conn = get_db_connection()
         cur = conn.cursor()
@@ -31,8 +33,8 @@ def get_messages():
             SELECT id, nickname, message, client_id, created_at
             FROM mqtt_messages
             ORDER BY created_at DESC
-            LIMIT %s
-        """, (limit,))
+            LIMIT %s OFFSET %s
+        """, (limit, offset))
         
         rows = cur.fetchall()
         cur.close()

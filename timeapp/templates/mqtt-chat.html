@@ -177,8 +177,13 @@
             </div>
             
             <!-- Messages Display -->
-            <div class="messages-container" id="messages-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <button id="load-more-btn" class="nav-button" style="padding: 8px 15px; font-size: 0.9rem; display: none;">📜 Lataa vanhempia viestejä</button>
+                <span style="color: #6c757d; font-size: 0.85rem;" id="message-hint">Näytetään viimeisimmät 50 viestiä</span>
+            </div>
+            <div class="messages-container" id="messages-container" style="position: relative;">
                 <!-- Messages will be inserted here -->
+                <button id="scroll-to-bottom-btn" class="nav-button" style="position: absolute; bottom: 15px; right: 15px; padding: 8px 15px; font-size: 0.9rem; display: none; z-index: 10;">⬇️ Uusimmat viestit</button>
             </div>
             
             <!-- Chat Input -->

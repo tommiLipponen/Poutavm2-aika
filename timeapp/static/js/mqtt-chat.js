@@ -105,7 +105,7 @@ function sendMessage() {
     });
 }
 
-function displayMessage(msg) {
+function displayMessage(msg, append = false) {
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message';
     
@@ -141,18 +141,52 @@ function displayMessage(msg) {
         <div class="message-text">${escapeHtml(messageText)}</div>
     `;
     
-    messagesContainer.appendChild(messageDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    if (append) {
+        messagesContainer.insertBefore(messageDiv, messagesContainer.firstChild);
+    } else {
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
 }
 
-function loadMessages() {
-    fetch('/mqtt-chat/api/messages')
+let messageOffset = 0;
+let hasMoreMessages = true;
+
+function loadMessages(append = false) {
+    const limit = 50;
+    fetch(`/mqtt-chat/api/messages?limit=${limit}&offset=${messageOffset}`)
         .then(response => response.json())
         .then(data => {
-            messagesContainer.innerHTML = '';
+            if (!append) {
+                messagesContainer.innerHTML = '';
+                messageOffset = 0;
+            }
+            
+            // If we got fewer messages than limit, no more to load
+            hasMoreMessages = data.messages.length === limit;
+            
+            // Update load more button visibility
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            if (hasMoreMessages && messageOffset > 0) {
+                loadMoreBtn.style.display = 'inline-block';
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
+            
+            // Store current scroll position
+            const oldScrollHeight = messagesContainer.scrollHeight;
+            
             data.messages.forEach(msg => {
-                displayMessage(msg);
+                displayMessage(msg, append);
             });
+            
+            // If appending, maintain scroll position
+            if (append) {
+                const newScrollHeight = messagesContainer.scrollHeight;
+                messagesContainer.scrollTop = newScrollHeight - oldScrollHeight;
+            }
+            
+            messageOffset += data.messages.length;
         })
         .catch(error => {
             console.error('Error loading messages:', error);
@@ -190,6 +224,28 @@ messageInput.addEventListener('keypress', function(e) {
 nicknameInput.addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         messageInput.focus();
+    }
+});
+
+// Load more button handler
+document.getElementById('load-more-btn')?.addEventListener('click', function() {
+    if (hasMoreMessages) {
+        loadMessages(true);
+    }
+});
+
+// Scroll to bottom button handler
+const scrollToBottomBtn = document.getElementById('scroll-to-bottom-btn');
+scrollToBottomBtn?.addEventListener('click', function() {
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    scrollToBottomBtn.style.display = 'none';
+});
+
+// Show/hide scroll to bottom button based on scroll position
+messagesContainer?.addEventListener('scroll', function() {
+    const isAtBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop <= messagesContainer.clientHeight + 50;
+    if (scrollToBottomBtn) {
+        scrollToBottomBtn.style.display = isAtBottom ? 'none' : 'inline-block';
     }
 });
 
