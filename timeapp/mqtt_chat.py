@@ -66,18 +66,21 @@ def get_stats():
         
         # Total messages
         cur.execute("SELECT COUNT(*) FROM mqtt_messages")
-        total_messages = cur.fetchone()[0]
+        result = cur.fetchone()
+        total_messages = result[0] if result else 0
         
         # Messages today
         cur.execute("""
             SELECT COUNT(*) FROM mqtt_messages
             WHERE DATE(created_at) = CURRENT_DATE
         """)
-        messages_today = cur.fetchone()[0]
+        result = cur.fetchone()
+        messages_today = result[0] if result else 0
         
         # Unique users
         cur.execute("SELECT COUNT(DISTINCT nickname) FROM mqtt_messages")
-        unique_users = cur.fetchone()[0]
+        result = cur.fetchone()
+        unique_users = result[0] if result else 0
         
         # Most active user
         cur.execute("""

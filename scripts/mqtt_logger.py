@@ -9,9 +9,10 @@ import logging
 import sys
 import os
 from datetime import datetime
-import paho.mqtt.client as mqtt
+from typing import Optional, Any
+import paho.mqtt.client as mqtt  # type: ignore
 import psycopg2
-from psycopg2 import pool
+from psycopg2 import pool  # type: ignore
 import time
 
 # Configuration
@@ -34,13 +35,13 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Database connection pool
-db_pool = None
+db_pool: Optional[Any] = None
 
 def init_db_pool():
     """Initialize database connection pool"""
     global db_pool
     try:
-        db_pool = psycopg2.pool.SimpleConnectionPool(
+        db_pool = psycopg2.pool.SimpleConnectionPool(  # type: ignore
             1, 10,  # min and max connections
             DB_URL
         )
@@ -58,7 +59,7 @@ def save_message(nickname, message, client_id):
     for attempt in range(max_retries):
         conn = None
         try:
-            conn = db_pool.getconn()
+            conn = db_pool.getconn()  # type: ignore
             cursor = conn.cursor()
             
             query = '''
@@ -68,7 +69,7 @@ def save_message(nickname, message, client_id):
             cursor.execute(query, (nickname, message, client_id))
             conn.commit()
             cursor.close()
-            db_pool.putconn(conn)
+            db_pool.putconn(conn)  # type: ignore
             
             logger.info(f"Saved: [{nickname}] {message[:50]}...")
             return True
@@ -78,7 +79,7 @@ def save_message(nickname, message, client_id):
             if conn:
                 try:
                     conn.rollback()
-                    db_pool.putconn(conn)
+                    db_pool.putconn(conn)  # type: ignore
                 except:
                     pass
             if attempt < max_retries - 1:
@@ -89,7 +90,7 @@ def save_message(nickname, message, client_id):
             logger.error(f"Unexpected error: {e}")
             if conn:
                 try:
-                    db_pool.putconn(conn)
+                    db_pool.putconn(conn)  # type: ignore
                 except:
                     pass
             return False
@@ -142,13 +143,13 @@ def main():
     
     # Test database connection
     try:
-        conn = db_pool.getconn()
+        conn = db_pool.getconn()  # type: ignore
         cursor = conn.cursor()
         cursor.execute("SELECT COUNT(*) FROM mqtt_messages")
         count = cursor.fetchone()[0]
         logger.info(f"Database OK - {count} messages in history")
         cursor.close()
-        db_pool.putconn(conn)
+        db_pool.putconn(conn)  # type: ignore
     except Exception as e:
         logger.error(f"Database test failed: {e}")
         sys.exit(1)

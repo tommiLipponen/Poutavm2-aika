@@ -11,9 +11,10 @@ print("=" * 60)
 
 routes = []
 for rule in app.url_map.iter_rules():
+    methods = rule.methods if rule.methods else set()
     routes.append({
         'endpoint': rule.endpoint,
-        'methods': ','.join(sorted(rule.methods - {'HEAD', 'OPTIONS'})),
+        'methods': ','.join(sorted(methods - {'HEAD', 'OPTIONS'})),
         'path': str(rule)
     })
 

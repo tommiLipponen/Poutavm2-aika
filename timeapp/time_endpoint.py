@@ -23,7 +23,8 @@ def get_time_from_db():
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute("SELECT NOW() AT TIME ZONE 'Europe/Helsinki'")
-        db_time = cur.fetchone()[0]
+        result = cur.fetchone()
+        db_time = result[0] if result else datetime.now()
         cur.close()
         conn.close()
         return db_time

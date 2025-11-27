@@ -111,7 +111,8 @@ def get_stats():
         cur.execute("""
             SELECT COUNT(*) FROM track;
         """)
-        total_tracks = cur.fetchone()[0]
+        track_result = cur.fetchone()
+        total_tracks = track_result[0] if track_result else 0
         
         cur.close()
         conn.close()
@@ -122,11 +123,11 @@ def get_stats():
             'monthly_sales': monthly_sales,
             'top_artists': top_artists,
             'summary': {
-                'total_customers': stats[0],
-                'total_invoices': stats[1],
-                'countries': stats[2],
-                'total_revenue': float(stats[3]),
-                'avg_invoice': float(stats[4]),
+                'total_customers': stats[0] if stats else 0,
+                'total_invoices': stats[1] if stats else 0,
+                'countries': stats[2] if stats else 0,
+                'total_revenue': float(stats[3]) if stats else 0.0,
+                'avg_invoice': float(stats[4]) if stats else 0.0,
                 'total_tracks': total_tracks
             }
         })
