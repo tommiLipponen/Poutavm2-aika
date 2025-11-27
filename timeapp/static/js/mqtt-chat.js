@@ -115,12 +115,15 @@ function displayMessage(msg) {
         minute: '2-digit' 
     });
     
+    // Handle both 'message' (from API) and 'text' (from MQTT)
+    const messageText = msg.message || msg.text || '';
+    
     messageDiv.innerHTML = `
         <div class="message-header">
             <span class="message-nickname">${escapeHtml(msg.nickname)}</span>
             <span class="message-time">${timeString}</span>
         </div>
-        <div class="message-text">${escapeHtml(msg.text)}</div>
+        <div class="message-text">${escapeHtml(messageText)}</div>
     `;
     
     messagesContainer.appendChild(messageDiv);
