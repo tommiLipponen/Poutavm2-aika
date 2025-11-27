@@ -173,17 +173,6 @@ function loadMessages(append = false) {
                 messageOffset = 0;
             }
             
-            // If we got fewer messages than limit, no more to load
-            hasMoreMessages = data.messages.length === limit;
-            
-            // Update load more button visibility
-            const loadMoreBtn = document.getElementById('load-more-btn');
-            if (hasMoreMessages && messageOffset > 0) {
-                loadMoreBtn.style.display = 'inline-block';
-            } else {
-                loadMoreBtn.style.display = 'none';
-            }
-            
             // Store current scroll position
             const oldScrollHeight = messagesContainer.scrollHeight;
             
@@ -198,6 +187,17 @@ function loadMessages(append = false) {
             }
             
             messageOffset += data.messages.length;
+            
+            // If we got fewer messages than limit, no more to load
+            hasMoreMessages = data.messages.length === limit;
+            
+            // Update load more button visibility
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            if (hasMoreMessages) {
+                loadMoreBtn.style.display = 'inline-block';
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
         })
         .catch(error => {
             console.error('Error loading messages:', error);
