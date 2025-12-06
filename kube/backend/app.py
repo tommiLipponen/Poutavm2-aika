@@ -3,7 +3,7 @@ Kubernetes Backend - Flask API
 Connects to host PostgreSQL and provides simple endpoints
 """
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import psycopg2
 import os
 from datetime import datetime
@@ -108,9 +108,110 @@ def index():
             '/api': 'This endpoint',
             '/api/health': 'Health check',
             '/api/time': 'Current time from PostgreSQL',
-            '/api/info': 'Application information'
+            '/api/info': 'Application information',
+            '/api/init': 'Initialize users table (POST)',
+            '/api/users': 'Get all users (GET) or add user (POST)'
         }
     })
+
+
+@app.route('/api/init', methods=['POST'])
+def init_database():
+    """Initialize users table with sample data"""
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        # Create users table if it doesn't exist
+        cur.execute('''
+            CREATE TABLE IF NOT EXISTS kube_users (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(100) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
+        # Check if table is empty
+        cur.execute('SELECT COUNT(*) FROM kube_users')
+        count = cur.fetchone()[0]
+        
+        if count == 0:
+            # Add sample users
+            sample_users = ['Alice', 'Bob', 'Charlie', 'Diana']
+            for name in sample_users:
+                cur.execute('INSERT INTO kube_users (name) VALUES (%s)', (name,))
+            
+            conn.commit()
+            message = f'Database initialized with {len(sample_users)} sample users'
+        else:
+            message = f'Database already contains {count} users'
+        
+        cur.close()
+        conn.close()
+        
+        return jsonify({
+            'status': 'success',
+            'message': message,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/users', methods=['GET', 'POST'])
+def users():
+    """Get all users or add a new user"""
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        if request.method == 'POST':
+            # Add new user
+            data = request.get_json()
+            if not data or 'name' not in data:
+                return jsonify({'error': 'Name is required'}), 400
+            
+            name = data['name'].strip()
+            if not name:
+                return jsonify({'error': 'Name cannot be empty'}), 400
+            
+            cur.execute('INSERT INTO kube_users (name) VALUES (%s) RETURNING id, name, created_at', (name,))
+            result = cur.fetchone()
+            conn.commit()
+            
+            return jsonify({
+                'status': 'success',
+                'message': f'User {name} added successfully',
+                'user': {
+                    'id': result[0],
+                    'name': result[1],
+                    'created_at': result[2].isoformat()
+                }
+            }), 201
+        
+        else:
+            # Get all users
+            cur.execute('SELECT id, name, created_at FROM kube_users ORDER BY created_at DESC')
+            rows = cur.fetchall()
+            
+            users_list = [
+                {
+                    'id': row[0],
+                    'name': row[1],
+                    'created_at': row[2].isoformat()
+                }
+                for row in rows
+            ]
+            
+            cur.close()
+            conn.close()
+            
+            return jsonify({
+                'count': len(users_list),
+                'users': users_list
+            })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':

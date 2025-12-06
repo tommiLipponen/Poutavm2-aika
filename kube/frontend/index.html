@@ -174,6 +174,42 @@
             background: #667eea;
             color: white;
         }
+
+        .user-form {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f5f7fa;
+            border-radius: 15px;
+        }
+
+        .user-form h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .user-form input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.2s;
+        }
+
+        .user-form input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .user-form button {
+            padding: 12px 30px;
+        }
     </style>
 </head>
 <body>
@@ -197,9 +233,19 @@
         
         <div class="controls">
             <button onclick="checkHealth()">🏥 Terveyden tila</button>
+            <button onclick="initDatabase()">🗄️ Alusta tietokanta</button>
+            <button onclick="getUsers()">👥 Hae käyttäjät</button>
             <button onclick="getTime()">🕐 Hae aika</button>
             <button onclick="getInfo()">ℹ️ Sovelluksen tiedot</button>
             <button onclick="testAPI()">🔌 Testaa API</button>
+        </div>
+
+        <div class="user-form">
+            <h3>➕ Lisää käyttäjä</h3>
+            <div class="form-group">
+                <input type="text" id="userName" placeholder="Kirjoita nimesi..." maxlength="100">
+                <button onclick="addUser()">Lisää</button>
+            </div>
         </div>
         
         <div id="resultContainer" class="result-container">
@@ -276,6 +322,69 @@
                 showResult('Virhe', { error: error.message }, true);
             }
         }
+
+        async function initDatabase() {
+            showLoading('Alustetaan tietokanta');
+            try {
+                const response = await fetch('api/init', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                showResult('Tietokannan alustus', data, !response.ok);
+            } catch (error) {
+                showResult('Virhe', { error: error.message }, true);
+            }
+        }
+
+        async function getUsers() {
+            showLoading('Haetaan käyttäjiä');
+            try {
+                const response = await fetch('api/users');
+                const data = await response.json();
+                showResult('Käyttäjät tietokannassa', data, !response.ok);
+            } catch (error) {
+                showResult('Virhe', { error: error.message }, true);
+            }
+        }
+
+        async function addUser() {
+            const nameInput = document.getElementById('userName');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                showResult('Virhe', { error: 'Nimi ei voi olla tyhjä' }, true);
+                return;
+            }
+
+            showLoading('Lisätään käyttäjä');
+            try {
+                const response = await fetch('api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name: name })
+                });
+                const data = await response.json();
+                showResult('Käyttäjän lisäys', data, !response.ok);
+                
+                if (response.ok) {
+                    nameInput.value = '';  // Clear input on success
+                }
+            } catch (error) {
+                showResult('Virhe', { error: error.message }, true);
+            }
+        }
+
+        // Allow Enter key to submit user
+        document.getElementById('userName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addUser();
+            }
+        });
 
         // Auto-run health check on load
         window.addEventListener('load', () => {
