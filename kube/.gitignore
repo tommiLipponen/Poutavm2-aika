@@ -1,0 +1,5 @@
+# Ignore secret with actual password
+kube/k8s/backend-secret.yaml
+
+# Note: The example file backend-secret.yaml in git has placeholder
+# You must edit it on the server with real password before deploying

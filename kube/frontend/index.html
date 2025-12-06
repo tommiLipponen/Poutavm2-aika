@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes - TimeApp</title>
+    <base href="/kube/">
+    <style>
+        /* Match existing TimeApp design */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: #764ba2;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        
+        .info-box {
+            background: #f5f7fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-box strong {
+            color: #667eea;
+        }
+        
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .tech-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            font-weight: 500;
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f5f7fa;
+            border-radius: 15px;
+            min-height: 200px;
+            display: none;
+        }
+        
+        .result-container.show {
+            display: block;
+        }
+        
+        .result-container h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .result {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+            border-left: 4px solid #667eea;
+        }
+        
+        .loading {
+            color: #667eea;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .error .result {
+            border-left-color: #dc3545;
+            color: #dc3545;
+        }
+        
+        .success .result {
+            border-left-color: #28a745;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #f5f7fa;
+        }
+        
+        .nav-buttons a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        
+        .nav-buttons a:hover {
+            background: #667eea;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>☸️ Kubernetes Demo</h1>
+        <p class="subtitle">Multi-Container Application Orchestration</p>
+        
+        <div class="info-box">
+            <p><strong>Arkkitehtuuri:</strong> Frontend (Nginx) → Backend (Flask) → PostgreSQL (Host)</p>
+            <p><strong>Orkestrointi:</strong> Kubernetes with Minikube</p>
+            <p><strong>Osoite:</strong> <span id="currentUrl"></span></p>
+        </div>
+        
+        <div class="tech-stack">
+            <div class="tech-badge">🐧 Linux</div>
+            <div class="tech-badge">🌐 Nginx</div>
+            <div class="tech-badge">🐍 Flask</div>
+            <div class="tech-badge">🐘 PostgreSQL</div>
+            <div class="tech-badge">☸️ Kubernetes</div>
+        </div>
+        
+        <div class="controls">
+            <button onclick="checkHealth()">🏥 Terveyden tila</button>
+            <button onclick="getTime()">🕐 Hae aika</button>
+            <button onclick="getInfo()">ℹ️ Sovelluksen tiedot</button>
+            <button onclick="testAPI()">🔌 Testaa API</button>
+        </div>
+        
+        <div id="resultContainer" class="result-container">
+            <h3 id="resultTitle">Tulos</h3>
+            <div id="result" class="result"></div>
+        </div>
+        
+        <div class="nav-buttons">
+            <a href="/">← Etusivu</a>
+            <a href="/data-analysis/">Analytiikka</a>
+            <a href="/mqtt-chat/">MQTT Chat</a>
+        </div>
+    </div>
+
+    <script>
+        const resultDiv = document.getElementById('result');
+        const resultContainer = document.getElementById('resultContainer');
+        const resultTitle = document.getElementById('resultTitle');
+        const urlSpan = document.getElementById('currentUrl');
+        urlSpan.textContent = window.location.href;
+
+        function showResult(title, data, isError = false) {
+            resultTitle.textContent = title;
+            resultDiv.textContent = JSON.stringify(data, null, 2);
+            resultContainer.className = 'result-container show ' + (isError ? 'error' : 'success');
+        }
+
+        function showLoading(title) {
+            resultTitle.textContent = title;
+            resultDiv.innerHTML = '<div class="loading">Ladataan...</div>';
+            resultContainer.className = 'result-container show';
+        }
+
+        async function checkHealth() {
+            showLoading('Terveyden tila');
+            try {
+                const response = await fetch('api/health');
+                const data = await response.json();
+                showResult('Terveyden tila', data, !response.ok);
+            } catch (error) {
+                showResult('Virhe', { error: error.message }, true);
+            }
+        }
+
+        async function getTime() {
+            showLoading('Aika tietokannasta');
+            try {
+                const response = await fetch('api/time');
+                const data = await response.json();
+                showResult('Aika tietokannasta', data, !response.ok);
+            } catch (error) {
+                showResult('Virhe', { error: error.message }, true);
+            }
+        }
+
+        async function getInfo() {
+            showLoading('Sovelluksen tiedot');
+            try {
+                const response = await fetch('api/info');
+                const data = await response.json();
+                showResult('Sovelluksen tiedot', data, !response.ok);
+            } catch (error) {
+                showResult('Virhe', { error: error.message }, true);
+            }
+        }
+
+        async function testAPI() {
+            showLoading('API testaus');
+            try {
+                const response = await fetch('api');
+                const data = await response.json();
+                showResult('API vastaus', data, !response.ok);
+            } catch (error) {
+                showResult('Virhe', { error: error.message }, true);
+            }
+        }
+
+        // Auto-run health check on load
+        window.addEventListener('load', () => {
+            setTimeout(checkHealth, 500);
+        });
+    </script>
+</body>
+</html>
