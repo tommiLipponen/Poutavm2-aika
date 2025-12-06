@@ -269,7 +269,7 @@
         async function testAPI() {
             showLoading('API testaus');
             try {
-                const response = await fetch('api');
+                const response = await fetch('api/');
                 const data = await response.json();
                 showResult('API vastaus', data, !response.ok);
             } catch (error) {
