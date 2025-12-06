@@ -98,6 +98,7 @@ def info():
     })
 
 
+@app.route('/api/')
 @app.route('/api')
 def index():
     """Root API endpoint"""
