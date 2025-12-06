@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"python.languageServer": "Pylance",
+		"files.associations": {
+			"*.html": "jinja-html"
+		}
+	}
+}
