@@ -133,7 +133,8 @@ def init_database():
         
         # Check if table is empty
         cur.execute('SELECT COUNT(*) FROM kube_users')
-        count = cur.fetchone()[0]
+        result = cur.fetchone()
+        count = result[0] if result else 0
         
         if count == 0:
             # Add sample users

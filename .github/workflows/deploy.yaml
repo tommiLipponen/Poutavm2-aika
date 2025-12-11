@@ -1,0 +1,114 @@
+name: CI/CD Pipeline - Deploy to Kubernetes
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+env:
+  APP_NAME: cicd-demo
+
+jobs:
+  # Job 1: Test backend
+  test-backend:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: kube/backend/requirements.txt
+
+      - name: Install dependencies
+        working-directory: ./kube/backend
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run pytest tests
+        working-directory: ./kube/backend
+        run: |
+          pytest test_api.py -v --tb=short
+
+      - name: Test coverage
+        working-directory: ./kube/backend
+        run: |
+          pytest test_api.py --cov=app --cov-report=term-missing
+
+  # Job 2: Deploy to server
+  deploy:
+    needs: test-backend
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Deploy to Pouta server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "🚀 Starting CI/CD deployment..."
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            
+            cd ~/Poutavm2-aika
+            
+            echo "📥 Pulling latest code from GitHub..."
+            git fetch origin
+            git reset --hard origin/master
+            
+            echo "🐳 Updating Kubernetes deployment..."
+            ./kube/update.sh
+            
+            echo "✅ Deployment completed!"
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            echo "📊 Current pod status:"
+            kubectl get pods
+            
+            echo ""
+            echo "🌐 Application available at: http://86.50.23.0/cicd/"
+
+      - name: Verify deployment
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "🧪 Running smoke tests..."
+            
+            # Wait for pods to be ready
+            sleep 5
+            
+            # Check if pods are running
+            if kubectl get pods | grep -E "frontend.*Running" && kubectl get pods | grep -E "backend.*Running"; then
+              echo "✅ All pods are running!"
+            else
+              echo "❌ Some pods are not running!"
+              kubectl get pods
+              exit 1
+            fi
+            
+            # Test health endpoint
+            echo "Testing health endpoint..."
+            curl -f http://192.168.49.2:30080/cicd/api/health || exit 1
+            
+            echo "✅ Smoke tests passed!"
+
+  # Job 3: Notify on failure
+  notify-failure:
+    needs: [test-backend, deploy]
+    runs-on: ubuntu-latest
+    if: failure()
+
+    steps:
+      - name: Deployment failed
+        run: |
+          echo "❌ CI/CD Pipeline failed!"
+          echo "Check the logs for details."
+          exit 1
