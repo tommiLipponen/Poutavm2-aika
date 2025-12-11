@@ -178,6 +178,7 @@ def show_time():
                 <a href="/data-analysis/" class="nav-link">📊 Data-Analysis sivulle</a>
                 <a href="/weather-data/" class="nav-link" style="margin-left: 15px;">🌤️ Sää ja Aurinkotuuli</a>
                 <a href="/mqtt-chat/" class="nav-link" style="margin-left: 15px;">💬 MQTT Chat</a>
+                <a href="/kube/" class="nav-link" style="margin-left: 15px;">☸️ Kubernetes</a>
                 <a href="/cicd/" class="nav-link" style="margin-left: 15px;">🚀 CI/CD Demo</a>
             </div>
         </div>
