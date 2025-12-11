@@ -162,23 +162,24 @@ def init_database():
 @app.route('/api/users', methods=['GET', 'POST'])
 def users():
     """Get all users or add a new user"""
+    # Validate input BEFORE connecting to database
+    if request.method == 'POST':
+        data = request.get_json()
+        if not data or 'name' not in data:
+            return jsonify({'error': 'Name is required'}), 400
+        
+        name = data['name'].strip()
+        if not name:
+            return jsonify({'error': 'Name cannot be empty'}), 400
+        
+        if len(name) > 100:
+            return jsonify({'error': 'Name too long (max 100 characters)'}), 400
+    
     try:
         conn = get_db_connection()
         cur = conn.cursor()
         
         if request.method == 'POST':
-            # Add new user
-            data = request.get_json()
-            if not data or 'name' not in data:
-                return jsonify({'error': 'Name is required'}), 400
-            
-            name = data['name'].strip()
-            if not name:
-                return jsonify({'error': 'Name cannot be empty'}), 400
-            
-            if len(name) > 100:
-                return jsonify({'error': 'Name too long (max 100 characters)'}), 400
-            
             # SQL injection is already prevented by using parameterized query (%s)
             cur.execute('INSERT INTO kube_users (name) VALUES (%s) RETURNING id, name, created_at', (name,))
             result = cur.fetchone()

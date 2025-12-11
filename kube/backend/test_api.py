@@ -78,17 +78,18 @@ def test_users_endpoint_get(client):
 
 
 def test_add_user_missing_data(client):
-    """Test adding user with missing data"""
+    """Test adding user with missing data - validation should happen before DB connection"""
     response = client.post('/api/users',
                           json={},
                           content_type='application/json')
     assert response.status_code == 400
     data = response.get_json()
     assert 'error' in data
+    assert 'required' in data['error'].lower()
 
 
 def test_add_user_empty_name(client):
-    """Test adding user with empty name"""
+    """Test adding user with empty name - validation should happen before DB connection"""
     response = client.post('/api/users',
                           json={'name': '   '},
                           content_type='application/json')
@@ -99,7 +100,7 @@ def test_add_user_empty_name(client):
 
 
 def test_add_user_too_long(client):
-    """Test adding user with name too long"""
+    """Test adding user with name too long - validation should happen before DB connection"""
     long_name = 'a' * 101  # More than 100 characters
     response = client.post('/api/users',
                           json={'name': long_name},
