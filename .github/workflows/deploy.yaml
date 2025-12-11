@@ -53,6 +53,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            set -e
             echo "🚀 Starting CI/CD deployment..."
             echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
             
@@ -61,14 +62,33 @@ jobs:
             echo "📥 Pulling latest code from GitHub..."
             git fetch origin
             git reset --hard origin/master
+            git log -1 --oneline
             
-            echo "🐳 Updating Kubernetes deployment..."
-            ./kube/update.sh
+            echo ""
+            echo "🐳 Setting up Minikube Docker environment..."
+            eval $(minikube docker-env)
             
+            echo "🏗️ Rebuilding backend image..."
+            cd ~/Poutavm2-aika/kube/backend
+            docker build -t kube-backend:latest .
+            
+            echo "🏗️ Rebuilding frontend image..."
+            cd ~/Poutavm2-aika/kube/frontend
+            docker build -t kube-frontend:latest .
+            
+            echo "♻️ Restarting deployments..."
+            kubectl rollout restart deployment backend
+            kubectl rollout restart deployment frontend
+            
+            echo "⏳ Waiting for rollout to complete..."
+            kubectl rollout status deployment backend --timeout=120s
+            kubectl rollout status deployment frontend --timeout=120s
+            
+            echo ""
             echo "✅ Deployment completed!"
             echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
             echo "📊 Current pod status:"
-            kubectl get pods
+            kubectl get pods -o wide
             
             echo ""
             echo "🌐 Application available at: http://86.50.23.0/cicd/"
